@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickCourt - Sports Booking Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #4CAF50;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .search-section {
+            margin-top: 30px;
+        }
+
+        .location-input {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .location-input:focus-within {
+            border-color: #4CAF50;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .location-input input {
+            border: none;
+            background: none;
+            font-size: 1.1rem;
+            flex: 1;
+            outline: none;
+            color: #333;
+        }
+
+        .location-input input::placeholder {
+            color: #666;
+        }
+
+        .search-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .search-subtitle {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .venues-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .see-all-btn {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .see-all-btn:hover {
+            color: #45a049;
+        }
+
+        .venue-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .venue-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .venue-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #4CAF50;
+        }
+
+        .venue-image {
+            height: 140px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .venue-info {
+            padding: 20px;
+        }
+
+        .venue-name {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .venue-location {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .venue-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .rating-stars {
+            color: #ffc107;
+        }
+
+        .venue-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .venue-tag {
+            background: #e8f5e8;
+            color: #4CAF50;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .sports-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .sports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+        }
+
+        .sport-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .sport-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .sport-image {
+            height: 120px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sport-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .sport-name {
+            padding: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .carousel-btn {
+            background: #f0f0f0;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .carousel-btn:hover {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .name-tags {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .name-tag {
+            position: absolute;
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .mobile-header {
+            display: none;
+            background: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .mobile-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-header {
+                display: block;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .venue-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .sports-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- <div class="mobile-header">
+        <div class="mobile-nav">
+            <button class="menu-btn">☰</button>
+            <div class="logo" style="font-size: 1.5rem;">QUICKCOURT</div>
+            <button class="menu-btn">👤</button>
+        </div>
+    </div> -->
+<header style="background: white; padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;">
+    <a href="{% url 'home' %}" style="font-size: 1.8rem; font-weight: 700; color: #4CAF50; text-decoration: none; letter-spacing: -0.5px; transition: color 0.3s ease;">QuickCourt</a>
+    <a href="{% url 'profile' %}" style="display: flex; align-items: center; gap: 8px; padding: 0.75rem 1.5rem; border-radius: 25px; background: #4CAF50; color: white; font-weight: 600; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);">
+        <img src="https://example.com/profile-icon.svg" alt="Profile Icon" style="width: 20px; height: 20px;">
+        <span>Profile</span>
+    </a>
+</header>
+
+<div class="sidebar">
+    <div class="logo" style="font-size: 1.5rem; margin-bottom: 30px;">QUICKCOURT</div>
+    <nav>
+        <div style="margin-bottom: 20px; color: #666;">Book with options</div>
+        <div style="margin-bottom: 30px;">
+            <div style="margin-bottom: 15px;">📅 Profile / Logout</div>
+        </div>
+        <div style="margin-bottom: 20px; font-size: 0.9rem; color: #888;">
+            Allow user to search for live locations in India<br>
+            Allow autocomplete or suggestions for cities
+        </div>
+        <div style="font-size: 0.9rem; color: #888;">
+            Based on selected location, display top rated venues
+        </div>
+    </nav>
+</div>
+
+<div class="container">
+    <div class="header">
+        <div class="logo">QUICKCOURT</div>
+        
+        <div class="search-section">
+            <form method="get" action="{% url 'home' %}">
+                <div class="location-input">
+                    <span style="margin-right: 10px; color: #666;">📍</span>
+                    <input 
+                        type="text" 
+                        placeholder="Ahmedabad" 
+                        id="locationInput" 
+                        name="location" 
+                        value="{{ search_location|default:'' }}" 
+                        autocomplete="off"
+                    >
+                </div>
+                <button type="submit" style="margin-top: 10px; padding: 0.5rem 1rem; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Search</button>
+            </form>
+            
+            <div class="search-title">FIND PLAYERS & VENUES NEARBY</div>
+            <div class="search-subtitle">
+                Seamlessly explore sports venues and play with<br>
+                sports enthusiasts just like you!
+            </div>
+        </div>
+    </div>
+
+    <div class="venues-section">
+        <div class="section-header">
+            <div class="section-title">Book Venues</div>
+            <a href="{% url 'venue_list' %}" class="see-all-btn">See all venues &gt;</a>
+        </div>
+        
+        <div class="venue-grid" id="venueGrid">
+            {% if venues %}
+                {% for venue in venues %}
+                    <div class="venue-card" onclick="window.location.href='{% url 'single_venue' venue.id %}'">
+                        <div class="venue-image">Image</div>
+                        <div class="venue-info">
+                            <div class="venue-name">{{ venue.name }}</div>
+                            <div class="venue-location">📍 {{ venue.location }}</div>
+                            <div class="venue-rating">
+                                <span class="rating-stars">{% for i in '12345'|slice:":venue.rating"|int %}★{% endfor %}</span>
+                                <span>{{ venue.rating }} ({{ venue.review_count|default:0 }})</span>
+                            </div>
+                            <div class="venue-tags">
+                                {% for tag in venue.tags.all %}
+                                    <span class="venue-tag">{{ tag.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No venues found for "{{ search_location }}"</p>
+            {% endif %}
+        </div>
+        
+        <div class="carousel-nav">
+            <button class="carousel-btn" onclick="previousVenues()">‹</button>
+            <button class="carousel-btn" onclick="nextVenues()">›</button>
+        </div>
+    </div>
+
+    <div class="sports-section">
+        <div class="section-header">
+            <div class="section-title">Popular Sports</div>
+        </div>
+        
+        <div class="sports-grid">
+            <div class="sport-card" data-sport="badminton">
+                <div class="sport-image">🏸</div>
+                <div class="sport-name">Badminton</div>
+            </div>
+            
+            <div class="sport-card" data-sport="football">
+                <div class="sport-image">⚽</div>
+                <div class="sport-name">Football</div>
+            </div>
+            
+            <div class="sport-card" data-sport="cricket">
+                <div class="sport-image">🏏</div>
+                <div class="sport-name">Cricket</div>
+            </div>
+            
+            <div class="sport-card" data-sport="swimming">
+                <div class="sport-image">🏊</div>
+                <div class="sport-name">Swimming</div>
+            </div>
+            
+            <div class="sport-card" data-sport="tennis">
+                <div class="sport-image">🎾</div>
+                <div class="sport-name">Tennis</div>
+            </div>
+            
+            <div class="sport-card" data-sport="tabletennis">
+                <div class="sport-image">🏓</div>
+                <div class="sport-name">Table Tennis</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="name-tags"></div>
+
+
+    <script>
+        // Floating name tags
+        const names = [
+            'Hearty Tiger', 'Mitali Prajapati', 'Proud Crow', 'Great Cod', 
+            'Dutiful Grouse', 'Noble Raccoon', 'Worthy Spoonbill', 
+            'Accomplished Gorilla', 'Actual Spoonbill'
+        ];
+
+        function createFloatingTag(name) {
+            const tag = document.createElement('div');
+            tag.className = 'name-tag';
+            tag.textContent = name;
+            
+            // Random position
+            tag.style.left = Math.random() * (window.innerWidth - 200) + 'px';
+            tag.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+            
+            // Random animation delay
+            tag.style.animationDelay = Math.random() * 3 + 's';
+            
+            document.querySelector('.name-tags').appendChild(tag);
+            
+            // Remove after animation
+            setTimeout(() => {
+                if (tag.parentNode) {
+                    tag.parentNode.removeChild(tag);
+                }
+            }, 8000);
+        }
+
+        // Create floating tags periodically
+        setInterval(() => {
+            const randomName = names[Math.floor(Math.random() * names.length)];
+            createFloatingTag(randomName);
+        }, 2000);
+
+        // Sidebar toggle
+        document.querySelector('.menu-btn').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(e) {
+            const sidebar = document.querySelector('.sidebar');
+            const menuBtn = document.querySelector('.menu-btn');
+            
+            if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Venue carousel
+        let currentVenueIndex = 0;
+        const venuesPerPage = 4;
+
+        function nextVenues() {
+            const venues = document.querySelectorAll('.venue-card');
+            currentVenueIndex = (currentVenueIndex + venuesPerPage) % venues.length;
+            updateVenueDisplay();
+        }
+
+        function previousVenues() {
+            const venues = document.querySelectorAll('.venue-card');
+            currentVenueIndex = (currentVenueIndex - venuesPerPage + venues.length) % venues.length;
+            updateVenueDisplay();
+        }
+
+        function updateVenueDisplay() {
+            const venues = document.querySelectorAll('.venue-card');
+            venues.forEach((venue, index) => {
+                if (index >= currentVenueIndex && index < currentVenueIndex + venuesPerPage) {
+                    venue.style.display = 'block';
+                } else {
+                    venue.style.display = 'none';
+                }
+            });
+        }
+
+        // Sport card interactions
+        document.querySelectorAll('.sport-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const sport = this.getAttribute('data-sport');
+                console.log(`Clicked on ${sport}`);
+                // Add sport selection logic here
+            });
+        });
+
+        // Location input autocomplete simulation
+        const cities = [
+            'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Ahmedabad', 
+            'Chennai', 'Kolkata', 'Surat', 'Pune', 'Jaipur'
+        ];
+
+        const locationInput = document.getElementById('locationInput');
+        locationInput.addEventListener('input', function() {
+            // Simulate autocomplete functionality
+            console.log('Searching for:', this.value);
+        });
+
+        // Venue card hover effects
+        document.querySelectorAll('.venue-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Initialize
+        updateVenueDisplay();
+       
+        const locationInput = document.getElementById('locationInput');
+        const venueGrid = document.getElementById('venueGrid');
+
+locationInput.addEventListener('input', async () => {
+    const query = locationInput.value.trim();
+    if (query.length < 2) {
+        venueGrid.innerHTML = '<p>Type at least 2 characters to search venues.</p>';
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/search_venues/?q=${encodeURIComponent(query)}`);
+        const data = await response.json();
+
+        if (data.venues.length === 0) {
+            venueGrid.innerHTML = '<p>No venues found for this location.</p>';
+            return;
+        }
+
+        venueGrid.innerHTML = data.venues.map(venue => `
+            <div class="venue-card" onclick="window.location.href='/venues/${venue.id}/'">
+                <div class="venue-image"><img src="${venue.image_url || 'https://via.placeholder.com/150'}" alt="${venue.name}" style="width: 100%; height: 100%; object-fit: cover;"></div>
+                <div class="venue-info">
+                    <div class="venue-name">${venue.name}</div>
+                    <div class="venue-location">📍 ${venue.location}</div>
+                    <div class="venue-rating">
+                        <span class="rating-stars">${'★'.repeat(Math.floor(venue.rating))}</span>
+                        <span>${venue.rating.toFixed(1)}</span>
+                    </div>
+                    <div class="venue-tags">
+                        ${venue.tags.map(tag => `<span class="venue-tag">${tag}</span>`).join('')}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch (err) {
+        venueGrid.innerHTML = '<p>Error fetching venues. Please try again.</p>';
+        console.error(err);
+    }
+});
+
+
+    </script>
+</body>
+</html>

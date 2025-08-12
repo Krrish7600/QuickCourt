@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Court Booking - QuickCourt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+            font-size: 1.1rem;
+            padding: 0.75rem 2rem;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #ddd;
+            color: #666;
+        }
+
+        .btn-outline:hover {
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .booking-layout {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .booking-form {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .venue-info {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .venue-name {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .venue-location {
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stars {
+            color: #ffa500;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .form-control:hover {
+            border-color: #d0d0d0;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #666;
+        }
+
+        .duration-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #f8f9fa;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            border: 2px solid #e8e8e8;
+        }
+
+        .duration-btn {
+            background: #4CAF50;
+            border: none;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .duration-btn:hover {
+            background: #45a049;
+            transform: scale(1.1);
+        }
+
+        .duration-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .duration-display {
+            font-weight: 600;
+            color: #333;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .court-selection {
+            position: relative;
+        }
+
+        .court-dropdown {
+            background: white;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .court-dropdown:hover {
+            border-color: #d0d0d0;
+        }
+
+        .court-dropdown.open {
+            border-color: #4CAF50;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .court-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #4CAF50;
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            z-index: 10;
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .court-options.show {
+            display: block;
+        }
+
+        .court-option {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .court-option:hover {
+            background: #f8fffe;
+        }
+
+        .court-option:last-child {
+            border-bottom: none;
+        }
+
+        .selected-courts {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .court-tag {
+            background: #4CAF50;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .court-tag .remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .continue-btn {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .calendar-widget, .time-slots {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            animation: slideLeft 0.6s ease-out;
+        }
+
+        .widget-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-nav {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            color: #666;
+        }
+
+        .calendar-nav:hover {
+            color: #4CAF50;
+        }
+
+        .month-year {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day.header {
+            font-weight: 600;
+            color: #666;
+            cursor: default;
+        }
+
+        .calendar-day.disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .calendar-day.today {
+            background: #e8f5e8;
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        .calendar-day.selected {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .calendar-day:not(.header):not(.disabled):hover {
+            background: #f0f9f0;
+        }
+
+        .calendar-note {
+            font-size: 0.85rem;
+            color: #666;
+            text-align: center;
+        }
+
+        .time-notice {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .time-slots-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .time-slot {
+            padding: 0.75rem;
+            border: 2px solid #e8e8e8;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .time-slot.available {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .time-slot.disabled {
+            background: #f5f5f5;
+            color: #ccc;
+            cursor: not-allowed;
+            border-color: #f0f0f0;
+        }
+
+        .time-slot.available:hover {
+            background: #45a049;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .booking-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                grid-row: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .booking-form {
+                padding: 1.5rem;
+            }
+            
+            .venue-name {
+                font-size: 1.5rem;
+            }
+            
+            .time-slots-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideLeft {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .time-slots {
+            animation-delay: 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <!-- <div class="header">
+        <div class="logo">QUICKCOURT</div>
+        <div class="header-actions">
+            <a href="#" class="btn btn-outline">📖 Book</a>
+            <a href="#" class="btn btn-outline">👤 Mitchell Admin</a>
+        </div>
+    </div> -->
+    <header style="background: white; padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;">
+    <a href="home.html" style="font-size: 1.8rem; font-weight: 700; color: #4CAF50; text-decoration: none; letter-spacing: -0.5px; transition: color 0.3s ease;">QuickCourt</a>
+    <a href="profile.html" style="display: flex; align-items: center; gap: 8px; padding: 0.75rem 1.5rem; border-radius: 25px; background: #4CAF50; color: white; font-weight: 600; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);">
+        <img src="https://example.com/profile-icon.svg" alt="Profile Icon" style="width: 20px; height: 20px;">
+        <span>Profile</span>
+    </a>
+</header>
+
+    <div class="container">
+        <h1 class="page-title">Court Booking</h1>
+
+        <div class="booking-layout">
+            <div class="booking-form">
+                <div class="venue-info">
+                    <h2 class="venue-name">SBR Badminton</h2>
+                    <div class="venue-location">
+                        <span>📍</span>
+                        <span>Satellite, Jodhpur Village</span>
+                    </div>
+                    <div class="rating">
+                        <span class="stars">⭐⭐⭐⭐</span>
+                        <span>4.0 (6)</span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label">Sport</label>
+                    <div class="select-wrapper">
+                        <select class="form-control" id="sportSelect">
+                            <option value="badminton">🏸 Badminton</option>
+                            <option value="tabletennis">🏓 Table Tennis</option>
+                            <option value="cricket">🏏 Box Cricket</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label">Date</label>
+                    <input type="date" class="form-control" id="dateInput" value="2025-05-06">
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label">Start Time</label>
+                    <input type="time" class="form-control" id="timeInput" value="01:00">
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label">Duration</label>
+                    <div class="duration-control">
+                        <button class="duration-btn" onclick="adjustDuration(-1)" id="decreaseBtn">-</button>
+                        <div class="duration-display" id="durationDisplay">2 Hr</div>
+                        <button class="duration-btn" onclick="adjustDuration(1)" id="increaseBtn">+</button>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label">Court</label>
+                    <div class="court-selection">
+                        <div class="court-dropdown" onclick="toggleCourtDropdown()" id="courtDropdown">
+                            --Select Court--
+                        </div>
+                        <div class="court-options" id="courtOptions">
+                            <div class="court-option" onclick="selectCourt('Table 1')">Table 1</div>
+                            <div class="court-option" onclick="selectCourt('Table 2')">Table 2</div>
+                            <div class="court-option" onclick="selectCourt('Table 3')">Table 3</div>
+                            <div class="court-option" onclick="selectCourt('Table 4')">Table 4</div>
+                        </div>
+                        <div class="selected-courts" id="selectedCourts"></div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary continue-btn" onclick="window.location.href='profile.html'" onclick="proceedToPayment()">
+                    Continue to Payment - ₹1200.00
+                </button>
+            </div>
+
+            <div class="sidebar">
+                <div class="calendar-widget">
+                    <h3 class="widget-title">May 2025</h3>
+                    <div class="calendar-header">
+                        <button class="calendar-nav" onclick="previousMonth()">‹</button>
+                        <div class="month-year" id="monthYear">May 2025</div>
+                        <button class="calendar-nav" onclick="nextMonth()">›</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar will be generated here -->
+                    </div>
+                    <div class="calendar-note">
+                        The selected date must be today or later
+                    </div>
+                </div>
+
+                <div class="time-slots">
+                    <h3 class="widget-title">Available Time Slots</h3>
+                    <div class="time-notice">
+                        Start time must be in the future.
+                        Reservation can be done 1 day in advance and cannot be selected.
+                    </div>
+                    <div class="time-slots-grid">
+                        <div class="time-slot available">06:00 AM</div>
+                        <div class="time-slot available">07:00 AM</div>
+                        <div class="time-slot available">08:00 AM</div>
+                        <div class="time-slot available">09:00 AM</div>
+                        <div class="time-slot available">10:00 AM</div>
+                        <div class="time-slot available">11:00 AM</div>
+                        <div class="time-slot disabled">12:00 PM</div>
+                        <div class="time-slot disabled">01:00 PM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentMonth = 4; // May (0-indexed)
+        let currentYear = 2025;
+        let selectedCourts = [];
+        let duration = 2;
+        let currentPrice = 1200;
+
+        // Initialize calendar
+        function initCalendar() {
+            generateCalendar(currentMonth, currentYear);
+        }
+
+        function generateCalendar(month, year) {
+            const calendarGrid = document.getElementById('calendarGrid');
+            const monthYear = document.getElementById('monthYear');
+            
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            monthYear.textContent = `${monthNames[month]} ${year}`;
+            
+            // Clear calendar
+            calendarGrid.innerHTML = '';
+            
+            // Add day headers
+            const dayHeaders = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+            dayHeaders.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day header';
+                dayElement.textContent = day;
+                calendarGrid.appendChild(dayElement);
+            });
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            
+            // Add empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day disabled';
+                calendarGrid.appendChild(emptyDay);
+            }
+            
+            // Add days of month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                const currentDate = new Date(year, month, day);
+                
+                if (currentDate < today.setHours(0,0,0,0)) {
+                    dayElement.classList.add('disabled');
+                } else if (currentDate.toDateString() === today.toDateString()) {
+                    dayElement.classList.add('today');
+                } else if (day === 6) { // Selected day
+                    dayElement.classList.add('selected');
+                }
+                
+                dayElement.onclick = () => selectDate(day, month, year);
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        function selectDate(day, month, year) {
+            // Remove previous selection
+            document.querySelectorAll('.calendar-day.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Add selection to clicked day
+            event.target.classList.add('selected');
+            
+            // Update date input
+            const formattedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            document.getElementById('dateInput').value = formattedDate;
+        }
+
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar(currentMonth, currentYear);
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar(currentMonth, currentYear);
+        }
+
+        // Duration controls
+        function adjustDuration(change) {
+            const newDuration = duration + change;
+            if (newDuration >= 1 && newDuration <= 8) {
+                duration = newDuration;
+                document.getElementById('durationDisplay').textContent = `${duration} Hr`;
+                updatePrice();
+                updateButtons();
+            }
+        }
+
+        function updateButtons() {
+            document.getElementById('decreaseBtn').disabled = duration <= 1;
+            document.getElementById('increaseBtn').disabled = duration >= 8;
+        }
+
+        // Court selection
+        function toggleCourtDropdown() {
+            const dropdown = document.getElementById('courtDropdown');
+            const options = document.getElementById('courtOptions');
+            
+            dropdown.classList.toggle('open');
+            options.classList.toggle('show');
+        }
+
+        function selectCourt(court) {
+            if (!selectedCourts.includes(court)) {
+                selectedCourts.push(court);
+                updateSelectedCourts();
+                updateCourtDropdownText();
+            }
+            
+            // Close dropdown
+            document.getElementById('courtDropdown').classList.remove('open');
+            document.getElementById('courtOptions').classList.remove('show');
+        }
+
+        function updateSelectedCourts() {
+            const container = document.getElementById('selectedCourts');
+            container.innerHTML = '';
+            
+            selectedCourts.forEach(court => {
+                const tag = document.createElement('div');
+                tag.className = 'court-tag';
+                tag.innerHTML = `${court} <span class="remove" onclick="removeCourt('${court}')">×</span>`;
+                container.appendChild(tag);
+            });
+        }
+
+        function removeCourt(court) {
+            selectedCourts = selectedCourts.filter(c => c !== court);
+            updateSelectedCourts();
+            updateCourtDropdownText();
+        }
+
+        function updateCourtDropdownText() {
+            const dropdown = document.getElementById('courtDropdown');
+            if (selectedCourts.length === 0) {
+                dropdown.textContent = '--Select Court--';
+            } else if (selectedCourts.length === 1) {
+                dropdown.textContent = selectedCourts[0];
+            } else {
+                dropdown.textContent = `${selectedCourts.length} courts selected`;
+            }
+        }
+
+        // Price calculation
+        function updatePrice() {
+            const basePrice = 600; // per hour
+            currentPrice = basePrice * duration * Math.max(selectedCourts.length, 1);
+            document.querySelector('.continue-btn').textContent = 
+                `Continue to Payment - ₹${currentPrice}.00`;
+        }
+
+        // Payment processing
+        function proceedToPayment() {
+            if (selectedCourts.length === 0) {
+                alert('Please select at least one court');
+                return;
+            }
+            
+            const bookingData = {
+                sport: document.getElementById('sportSelect').value,
+                date: document.getElementById('dateInput').value,
+                time: document.getElementById('timeInput').value,
+                duration: duration,
+                courts: selectedCourts,
+                price: currentPrice
+            };
+            
+            console.log('Booking data:', bookingData);
+            alert(`Proceeding to payment for ₹${currentPrice}.00`);
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const courtSelection = document.querySelector('.court-selection');
+            if (!courtSelection.contains(event.target)) {
+                document.getElementById('courtDropdown').classList.remove('open');
+                document.getElementById('courtOptions').classList.remove('show');
+            }
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initCalendar();
+            updateButtons();
+            
+            // Pre-select some courts as shown in the image
+            selectCourt('Table 1');
+            selectCourt('Table 2');
+        });
+
+        // Sport change handler
+        document.getElementById('sportSelect').addEventListener('change', function() {
+            updatePrice();
+        });
+
+        // Update price when courts change
+        const observer = new MutationObserver(function() {
+            updatePrice();
+        });
+        observer.observe(document.getElementById('selectedCourts'), { childList: true });
+    </script>
+</body>
+</html>

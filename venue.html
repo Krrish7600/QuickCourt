@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickCourt - Venue Booking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4CAF50;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .book-btn, .login-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .login-btn {
+            background: transparent;
+            color: #4CAF50;
+            border: 2px solid #4CAF50;
+        }
+
+        .book-btn:hover {
+            background: #45a049;
+            transform: translateY(-1px);
+        }
+
+        .login-btn:hover {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            height: fit-content;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 100px;
+        }
+
+        .filter-section {
+            margin-bottom: 25px;
+        }
+
+        .filter-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .filter-dropdown {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .price-range {
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .price-display {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .venue-type-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .venue-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .venue-option input[type="radio"] {
+            accent-color: #4CAF50;
+        }
+
+        .rating-filters {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .rating-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .rating-option:hover {
+            background: #f0f0f0;
+        }
+
+        .rating-option input[type="checkbox"] {
+            accent-color: #4CAF50;
+        }
+
+        .clear-filters {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        .clear-filters:hover {
+            background: #d32f2f;
+        }
+
+        .content-area {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .venues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .venue-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .venue-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #4CAF50;
+        }
+
+        .venue-image {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .venue-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .venue-info {
+            padding: 20px;
+        }
+
+        .venue-name {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .venue-location {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .venue-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .rating-stars {
+            color: #ffc107;
+        }
+
+        .venue-price {
+            color: #4CAF50;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .venue-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .venue-tag {
+            background: #e8f5e8;
+            color: #4CAF50;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .view-details-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        .view-details-btn:hover {
+            background: #45a049;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .page-btn {
+            background: #f0f0f0;
+            border: none;
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .page-btn:hover, .page-btn.active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .name-tags {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .name-tag {
+            position: absolute;
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .mobile-filters {
+            display: none;
+            background: white;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .filter-toggle {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 0 15px;
+            }
+            
+            .sidebar {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                z-index: 1000;
+                overflow-y: auto;
+                border-radius: 0;
+            }
+            
+            .sidebar.active {
+                display: block;
+            }
+            
+            .mobile-filters {
+                display: block;
+            }
+            
+            .venues-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .nav-container {
+                padding: 0 15px;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+        }
+
+        .results-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .results-count {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .sort-dropdown {
+            padding: 8px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- <div class="header">
+        <div class="nav-container">
+            <div class="logo">QUICKCOURT</div>
+            <div class="nav-actions">
+                <a href="booking.html" class="book-btn">📅 Book</a>
+                <a href="login.html" class="login-btn">👤 Login / Sign Up</a>
+            </div>
+        </div>
+    </div> -->
+    <header style="background: white; padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;">
+    <a href="home.html" style="font-size: 1.8rem; font-weight: 700; color: #4CAF50; text-decoration: none; letter-spacing: -0.5px; transition: color 0.3s ease;">QuickCourt</a>
+    <a href="profile.html" style="display: flex; align-items: center; gap: 8px; padding: 0.75rem 1.5rem; border-radius: 25px; background: #4CAF50; color: white; font-weight: 600; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);">
+        <img src="https://example.com/profile-icon.svg" alt="Profile Icon" style="width: 20px; height: 20px;">
+        <span>Profile</span>
+    </a>
+</header>
+    <div class="breadcrumb">
+    <a href="home.html">←</a> 
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar" id="sidebar">
+            <div class="filter-section">
+                <div class="filter-title">Search by venue name</div>
+                <input type="text" class="search-input" placeholder="Search for venue" id="venueSearch">
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Filter by sport type</div>
+                <select class="filter-dropdown" id="sportFilter">
+                    <option value="">All Sports</option>
+                    <option value="badminton">Badminton</option>
+                    <option value="tennis">Tennis</option>
+                    <option value="cricket">Cricket</option>
+                    <option value="football">Football</option>
+                    <option value="swimming">Swimming</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Price range (per hour)</div>
+                <input type="range" class="price-range" min="100" max="1000" value="500" id="priceRange">
+                <div class="price-display" id="priceDisplay">₹100 - ₹500</div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Choose venue type</div>
+                <div class="venue-type-options">
+                    <label class="venue-option">
+                        <input type="radio" name="venueType" value="indoor" checked>
+                        <span>🏢 Indoor</span>
+                    </label>
+                    <label class="venue-option">
+                        <input type="radio" name="venueType" value="outdoor">
+                        <span>🌳 Outdoor</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">⭐ Rating</div>
+                <div class="rating-filters">
+                    <label class="rating-option">
+                        <input type="checkbox" value="4+">
+                        <span>⭐ 4 stars & up</span>
+                    </label>
+                    <label class="rating-option">
+                        <input type="checkbox" value="3+">
+                        <span>⭐ 3 stars & up</span>
+                    </label>
+                    <label class="rating-option">
+                        <input type="checkbox" value="2+">
+                        <span>⭐ 2 stars & up</span>
+                    </label>
+                    <label class="rating-option">
+                        <input type="checkbox" value="1+">
+                        <span>⭐ 1 stars & up</span>
+                    </label>
+                </div>
+            </div>
+
+            <button class="clear-filters" onclick="clearAllFilters()">CLEAR FILTERS</button>
+        </div>
+
+        <div class="content-area">
+            <div class="mobile-filters">
+                <button class="filter-toggle" onclick="toggleMobileFilters()">🔍 Filters & Search</button>
+            </div>
+
+            <div class="page-title">Vidhi Shah</div>
+            <div class="page-subtitle">in Ahmedabad: Discover and Book Multiple Sports Venues</div>
+
+            <div class="results-info">
+                <div class="results-count">Showing <span id="resultsCount">12</span> venues</div>
+                <select class="sort-dropdown" id="sortDropdown">
+                    <option value="relevance">Sort by Relevance</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="rating">Highest Rated</option>
+                    <option value="newest">Newest First</option>
+                </select>
+            </div>
+
+            <div class="venues-grid" id="venuesGrid">
+                <!-- Venues will be populated by JavaScript -->
+            </div>
+
+            <div class="pagination">
+                <button class="page-btn" onclick="changePage('prev')">‹</button>
+                <button class="page-btn active" onclick="changePage(1)">1</button>
+                <button class="page-btn" onclick="changePage(2)">2</button>
+                <button class="page-btn" onclick="changePage(3)">3</button>
+                <button class="page-btn" onclick="changePage(4)">4</button>
+                <span style="margin: 0 10px; color: #666;">...</span>
+                <button class="page-btn" onclick="changePage(11)">11</button>
+                <button class="page-btn" onclick="changePage('next')">›</button>
+            </div>
+        </div>
+    </div>
+
+    <div style="background: white; text-align: center; padding: 30px; margin-top: 50px;">
+        <div style="color: #666;">Footer</div>
+    </div>
+
+    <div class="name-tags"></div>
+
+    <script>
+        // Sample venue data
+        const venues = [
+            {
+                name: "SRB Badminton",
+                location: "Vastrapur Cir",
+                rating: 4.5,
+                reviews: 6,
+                price: 250,
+                sport: "badminton",
+                type: "indoor",
+                image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop",
+                tags: ["Badminton", "Indoor", "AC"]
+            },
+            {
+                name: "Elite Tennis Academy",
+                location: "Satellite Area",
+                rating: 4.8,
+                reviews: 15,
+                price: 400,
+                sport: "tennis",
+                type: "outdoor",
+                image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
+                tags: ["Tennis", "Outdoor", "Professional"]
+            },
+            {
+                name: "Aqua Sports Complex",
+                location: "Bopal",
+                rating: 4.3,
+                reviews: 22,
+                price: 300,
+                sport: "swimming",
+                type: "indoor",
+                image: "https://images.unsplash.com/photo-1530549387789-4c1017266635?w=400&h=300&fit=crop",
+                tags: ["Swimming", "Indoor", "Pool"]
+            },
+            {
+                name: "City Football Ground",
+                location: "Maninagar",
+                rating: 4.1,
+                reviews: 8,
+                price: 500,
+                sport: "football",
+                type: "outdoor",
+                image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop",
+                tags: ["Football", "Outdoor", "Turf"]
+            },
+            {
+                name: "Premier Cricket Club",
+                location: "Navrangpura",
+                rating: 4.7,
+                reviews: 18,
+                price: 600,
+                sport: "cricket",
+                type: "outdoor",
+                image: "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=400&h=300&fit=crop",
+                tags: ["Cricket", "Outdoor", "Nets"]
+            },
+            {
+                name: "Table Tennis Hub",
+                location: "CG Road",
+                rating: 4.4,
+                reviews: 12,
+                price: 200,
+                sport: "tabletennis",
+                type: "indoor",
+                image: "https://images.unsplash.com/photo-1609710228159-0fa9bd7c0827?w=400&h=300&fit=crop",
+                tags: ["Table Tennis", "Indoor", "Multiple Tables"]
+            },
+            {
+                name: "Pro Badminton Center",
+                location: "Thaltej",
+                rating: 4.6,
+                reviews: 25,
+                price: 350,
+                sport: "badminton",
+                type: "indoor",
+                image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop",
+                tags: ["Badminton", "Indoor", "Professional"]
+            },
+            {
+                name: "Open Air Tennis",
+                location: "Ambawadi",
+                rating: 4.2,
+                reviews: 9,
+                price: 280,
+                sport: "tennis",
+                type: "outdoor",
+                image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=300&fit=crop",
+                tags: ["Tennis", "Outdoor", "Clay Court"]
+            },
+            {
+                name: "Olympic Swimming Pool",
+                location: "Vastrapur",
+                rating: 4.9,
+                reviews: 35,
+                price: 450,
+                sport: "swimming",
+                type: "indoor",
+                image: "https://images.unsplash.com/photo-1530549387789-4c1017266635?w=400&h=300&fit=crop",
+                tags: ["Swimming", "Indoor", "Olympic Size"]
+            }
+        ];
+
+        let filteredVenues = [...venues];
+        let currentPage = 1;
+        const venuesPerPage = 6;
+
+        // Floating name tags
+        const names = [
+            'Adventurous Eel', 'Vidhi Shah', 'Clever Grasshopper', 'Wonderful Mallard',
+            'Noble Raccoon', 'Thou', 'Great Cod', 'Cheerful Herring', 'Proud Crow'
+        ];
+
+        function createFloatingTag(name) {
+            const tag = document.createElement('div');
+            tag.className = 'name-tag';
+            tag.textContent = name;
+            
+            tag.style.left = Math.random() * (window.innerWidth - 200) + 'px';
+            tag.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+            tag.style.animationDelay = Math.random() * 3 + 's';
+            
+            document.querySelector('.name-tags').appendChild(tag);
+            
+            setTimeout(() => {
+                if (tag.parentNode) {
+                    tag.parentNode.removeChild(tag);
+                }
+            }, 8000);
+        }
+
+        setInterval(() => {
+            const randomName = names[Math.floor(Math.random() * names.length)];
+            createFloatingTag(randomName);
+        }, 2500);
+
+        // Render venues
+        function renderVenues() {
+            const grid = document.getElementById('venuesGrid');
+            const startIndex = (currentPage - 1) * venuesPerPage;
+            const endIndex = startIndex + venuesPerPage;
+            const venuesToShow = filteredVenues.slice(startIndex, endIndex);
+
+            grid.innerHTML = venuesToShow.map(venue => `
+                <div class="venue-card" onclick="viewVenueDetails('${venue.name}')">
+                    <div class="venue-image" style="background-image: url('${venue.image}');">
+                    </div>
+                    <div class="venue-info">
+                        <div class="venue-name">${venue.name}</div>
+                        <div class="venue-location">📍 ${venue.location}</div>
+                        <div class="venue-rating">
+                            <span class="rating-stars">${'★'.repeat(Math.floor(venue.rating))}${venue.rating % 1 ? '☆' : ''}</span>
+                            <span>${venue.rating} (${venue.reviews})</span>
+                        </div>
+                        <div class="venue-price">₹ ${venue.price} per hour</div>
+                        <div class="venue-tags">
+                            ${venue.tags.map(tag => `<span class="venue-tag">${tag}</span>`).join('')}
+                        </div>
+                        <button class="view-details-btn" onclick="window.location.href='detailsPage.html'">View Details</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('resultsCount').textContent = filteredVenues.length;
+        }
+
+        // Filter functions
+        function applyFilters() {
+            const searchTerm = document.getElementById('venueSearch').value.toLowerCase();
+            const sportFilter = document.getElementById('sportFilter').value;
+            const priceRange = document.getElementById('priceRange').value;
+            const venueType = document.querySelector('input[name="venueType"]:checked').value;
+            const ratingFilters = Array.from(document.querySelectorAll('.rating-option input:checked')).map(cb => cb.value);
+
+            filteredVenues = venues.filter(venue => {
+                const matchesSearch = venue.name.toLowerCase().includes(searchTerm) || 
+                                    venue.location.toLowerCase().includes(searchTerm);
+                const matchesSport = !sportFilter || venue.sport === sportFilter;
+                const matchesPrice = venue.price <= parseInt(priceRange);
+                const matchesType = venue.type === venueType;
+                const matchesRating = ratingFilters.length === 0 || 
+                                    ratingFilters.some(filter => {
+                                        const minRating = parseInt(filter);
+                                        return venue.rating >= minRating;
+                                    });
+
+                return matchesSearch && matchesSport && matchesPrice && matchesType && matchesRating;
+            });
+
+            currentPage = 1;
+            renderVenues();
+        }
+
+        // Event listeners
+        document.getElementById('venueSearch').addEventListener('input', applyFilters);
+        document.getElementById('sportFilter').addEventListener('change', applyFilters);
+        document.getElementById('priceRange').addEventListener('input', function() {
+            document.getElementById('priceDisplay').textContent = `₹100 - ₹${this.value}`;
+            applyFilters();
+        });
+        document.querySelectorAll('input[name="venueType"]').forEach(radio => {
+            radio.addEventListener('change', applyFilters);
+        });
+        document.querySelectorAll('.rating-option input').forEach(checkbox => {
+            checkbox.addEventListener('change', applyFilters);
+        });
+
+        // Sort functionality
+        document.getElementById('sortDropdown').addEventListener('change', function() {
+            const sortBy = this.value;
+            
+            switch(sortBy) {
+                case 'price-low':
+                    filteredVenues.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filteredVenues.sort((a, b) => b.price - a.price);
+                    break;
+                case 'rating':
+                    filteredVenues.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'newest':
+                    filteredVenues.sort((a, b) => b.reviews - a.reviews);
+                    break;
+                default:
+                    filteredVenues = [...venues];
+                    applyFilters();
+                    return;
+            }
+            renderVenues();
+        });
+
+        // Pagination
+        function changePage(page) {
+            if (page === 'prev') {
+                currentPage = Math.max(1, currentPage - 1);
+            } else if (page === 'next') {
+                const maxPages = Math.ceil(filteredVenues.length / venuesPerPage);
+                currentPage = Math.min(maxPages, currentPage + 1);
+            } else {
+                currentPage = page;
+            }
+            
+            renderVenues();
+            
+            // Update active page button
+            document.querySelectorAll('.page-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[onclick="changePage(${currentPage})"]`)?.classList.add('active');
+        }
+
+        // Mobile filters toggle
+        function toggleMobileFilters() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Clear filters
+        function clearAllFilters() {
+            document.getElementById('venueSearch').value = '';
+            document.getElementById('sportFilter').value = '';
+            document.getElementById('priceRange').value = 500;
+            document.getElementById('priceDisplay').textContent = '₹100 - ₹500';
+            document.querySelector('input[name="venueType"][value="indoor"]').checked = true;
+            document.querySelectorAll('.rating-option input').forEach(cb => cb.checked = false);
+            
+            filteredVenues = [...venues];
+            currentPage = 1;
+            renderVenues();
+        }
+
+        // Venue details
+        function viewVenueDetails(venueName) {
+            alert(`Opening booking details for: ${venueName}`);
+            // Here you would typically navigate to a detailed booking page
+        }
+
+        // Close mobile sidebar when clicking outside
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const filterToggle = document.querySelector('.filter-toggle');
+            
+            if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !filterToggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Initialize
+        renderVenues();
+    </script>
+</body>
+</html>
