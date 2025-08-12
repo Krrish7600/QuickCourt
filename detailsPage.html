@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBR Badminton - QuickCourt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #ddd;
+            color: #666;
+        }
+
+        .btn-outline:hover {
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .venue-header {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .venue-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .venue-location {
+            color: #666;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stars {
+            color: #ffa500;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .image-gallery {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .gallery-controls {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-controls:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .prev {
+            left: 1rem;
+        }
+
+        .next {
+            right: 1rem;
+        }
+
+        .gallery-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            color: white;
+            font-size: 1.2rem;
+            position: relative;
+        }
+
+        .current-image {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .sports-section, .amenities-section, .about-section, .reviews-section {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .sports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .sport-item {
+            text-align: center;
+            padding: 1rem;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sport-item:hover, .sport-item.active {
+            border-color: #4CAF50;
+            background: #f8fffe;
+        }
+
+        .sport-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .amenity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+        }
+
+        .amenity-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4CAF50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .review-item {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .review-item:hover {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .review-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .booking-card, .info-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .book-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .hours-info, .address-info {
+            margin-bottom: 1rem;
+        }
+
+        .info-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .info-content {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .load-more {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .load-more-btn {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .load-more-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .venue-title {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sports-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+            
+            .amenities-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .gallery-controls {
+                width: 35px;
+                height: 35px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .venue-header, .sports-section, .amenities-section, .about-section, .reviews-section, .booking-card, .info-card {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .venue-header { animation-delay: 0.1s; }
+        .sports-section { animation-delay: 0.2s; }
+        .amenities-section { animation-delay: 0.3s; }
+        .about-section { animation-delay: 0.4s; }
+        .reviews-section { animation-delay: 0.5s; }
+        .booking-card { animation-delay: 0.2s; }
+        .info-card { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <!-- <div class="header">
+        <div class="logo">QUICKCOURT</div>
+        <div class="header-actions">
+            <a href="booking.html" class="btn btn-outline">📖 Book</a>
+            <a href="login.html" class="btn btn-outline">👤 Login / Sign Up</a>
+        </div>
+    </div> -->
+    <header style="background: white; padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;">
+    <a href="home.html" style="font-size: 1.8rem; font-weight: 700; color: #4CAF50; text-decoration: none; letter-spacing: -0.5px; transition: color 0.3s ease;">QuickCourt</a>
+    <a href="profile.html" style="display: flex; align-items: center; gap: 8px; padding: 0.75rem 1.5rem; border-radius: 25px; background: #4CAF50; color: white; font-weight: 600; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);">
+        <img src="https://example.com/profile-icon.svg" alt="Profile Icon" style="width: 20px; height: 20px;">
+        <span>Profile</span>
+    </a>
+</header>
+
+    <div class="container">
+        <div class="venue-header">
+            <h1 class="venue-title">SBR Badminton</h1>
+            <div class="venue-location">
+                <span>📍</span>
+                <span>Satellite, Jodhpur Village</span>
+            </div>
+            <div class="rating">
+                <span class="stars">⭐⭐⭐⭐</span>
+                <span>4.0 (6)</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="left-column">
+                <div class="image-gallery">
+                    <button class="gallery-controls prev" onclick="previousImage()">❮</button>
+                    <button class="gallery-controls next" onclick="nextImage()">❯</button>
+                    <div class="gallery-content">
+                        <div class="current-image" id="currentImage">Krish Mamtora</div>
+                        <div style="position: absolute; bottom: 1rem; color: rgba(255,255,255,0.8);">
+                            Images / Videos
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sports-section">
+                    <h2 class="section-title">Sports Available</h2>
+                    <p style="color: #666; margin-bottom: 1rem;">Click on sports to view price chart</p>
+                    <div class="sports-grid">
+                        <div class="sport-item active" onclick="selectSport(this)">
+                            <div class="sport-icon">🏸</div>
+                            <div>Badminton</div>
+                        </div>
+                        <div class="sport-item" onclick="selectSport(this)">
+                            <div class="sport-icon">🏓</div>
+                            <div>Table Tennis</div>
+                        </div>
+                        <div class="sport-item" onclick="selectSport(this)">
+                            <div class="sport-icon">🏏</div>
+                            <div>Box Cricket</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="amenities-section">
+                    <h2 class="section-title">Amenities</h2>
+                    <div class="amenities-grid">
+                        <div class="amenity-item">
+                            <div class="amenity-icon">✓</div>
+                            <div>Parking</div>
+                        </div>
+                        <div class="amenity-item">
+                            <div class="amenity-icon">✓</div>
+                            <div>Restrooms</div>
+                        </div>
+                        <div class="amenity-item">
+                            <div class="amenity-icon">✓</div>
+                            <div>Refreshments</div>
+                        </div>
+                        <div class="amenity-item">
+                            <div class="amenity-icon">✓</div>
+                            <div>CCTV Surveillance</div>
+                        </div>
+                        <div class="amenity-item">
+                            <div class="amenity-icon">✓</div>
+                            <div>Centrally Air Conditioned Hall</div>
+                        </div>
+                        <div class="amenity-item">
+                            <div class="amenity-icon">✓</div>
+                            <div>Seating Arrangement</div>
+                        </div>
+                        <div class="amenity-item">
+                            <div class="amenity-icon">✓</div>
+                            <div>WiFi</div>
+                        </div>
+                        <div class="amenity-item">
+                            <div class="amenity-icon">✓</div>
+                            <div>Library</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-section">
+                    <h2 class="section-title">About Venue</h2>
+                    <div class="info-content">
+                        <p><strong>Tournament Training Venue</strong></p>
+                        <p>- For more than 8 players 5% 5% extra per person</p>
+                        <p>- Equipment available on rent</p>
+                        <p>- ...</p>
+                    </div>
+                </div>
+
+                <div class="reviews-section">
+                    <h2 class="section-title">Player Reviews & Ratings</h2>
+                    <div id="reviewsContainer">
+                        <!-- Reviews will be loaded here -->
+                    </div>
+                    <div class="load-more">
+                        <a href="#" class="load-more-btn" onclick="loadMoreReviews()">Load more reviews</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="booking-card">
+                    <button class="btn btn-primary book-btn" onclick="window.location.href='booking.html'">Book This Venue</button>
+                    
+                    <div class="hours-info">
+                        <div class="info-title">🕒 Operating Hours</div>
+                        <div class="info-content">7:00AM - 11:00PM</div>
+                    </div>
+
+                    <div class="address-info">
+                        <div class="info-title">📍 Address</div>
+                        <div class="info-content">
+                            Shree Ganesh Complex Unit Opp, Ajanta Heights, Satellite, 
+                            Jodhpur Village, Ahmedabad, Gujarat 380015
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-title">🌟 Location Map</div>
+                    <div style="height: 200px; background: linear-gradient(45deg, #f0f0f0, #e0e0e0); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #666;">
+                        Interactive Map Coming Soon
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-title">💰 Pricing</div>
+                    <div class="info-content">
+                        <div style="margin-bottom: 0.5rem;"><strong>Badminton</strong></div>
+                        <div style="margin-bottom: 0.5rem;">Pricing is subject to change</div>
+                        <div style="margin-bottom: 1rem;">Monday - Friday: INR 500.0 / hour</div>
+                        <div style="margin-bottom: 0.5rem;">Saturday - Sunday: INR 500.0 / hour</div>
+                        <div>Holiday(s): INR 500.0 / hour</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gallery functionality
+        const images = ['Krish Mamtora', 'Court View', 'Facility Tour', 'Training Area', 'Reception'];
+        let currentImageIndex = 0;
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            updateImage();
+        }
+
+        function previousImage() {
+            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+            updateImage();
+        }
+
+        function updateImage() {
+            document.getElementById('currentImage').textContent = images[currentImageIndex];
+        }
+
+        // Sports selection
+        function selectSport(element) {
+            document.querySelectorAll('.sport-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            // Update pricing based on selected sport
+            updatePricing(element.textContent.trim());
+        }
+
+        function updatePricing(sport) {
+            const pricingSection = document.querySelector('.info-card:last-child .info-content');
+            let pricingHTML = `<div style="margin-bottom: 0.5rem;"><strong>${sport}</strong></div>`;
+            
+            if (sport === 'Badminton') {
+                pricingHTML += `
+                    <div style="margin-bottom: 0.5rem;">Pricing is subject to change</div>
+                    <div style="margin-bottom: 1rem;">Monday - Friday: INR 500.0 / hour</div>
+                    <div style="margin-bottom: 0.5rem;">Saturday - Sunday: INR 500.0 / hour</div>
+                    <div>Holiday(s): INR 500.0 / hour</div>
+                `;
+            } else if (sport === 'Table Tennis') {
+                pricingHTML += `
+                    <div style="margin-bottom: 0.5rem;">Pricing is subject to change</div>
+                    <div style="margin-bottom: 1rem;">Monday - Friday: INR 300.0 / hour</div>
+                    <div style="margin-bottom: 0.5rem;">Saturday - Sunday: INR 350.0 / hour</div>
+                    <div>Holiday(s): INR 400.0 / hour</div>
+                `;
+            } else {
+                pricingHTML += `
+                    <div style="margin-bottom: 0.5rem;">Pricing is subject to change</div>
+                    <div style="margin-bottom: 1rem;">Monday - Friday: INR 800.0 / hour</div>
+                    <div style="margin-bottom: 0.5rem;">Saturday - Sunday: INR 1000.0 / hour</div>
+                    <div>Holiday(s): INR 1200.0 / hour</div>
+                `;
+            }
+            
+            pricingSection.innerHTML = pricingHTML;
+        }
+
+        // Reviews functionality
+        const reviews = [
+            { name: 'Mitchell Admin', rating: 5, date: '18 June 2020, 9:36 PM', comment: 'Nice turf, well maintained' },
+            { name: 'Mitchell Admin', rating: 5, date: '18 June 2020, 9:36 PM', comment: 'Nice turf, well maintained' },
+            { name: 'Mitchell Admin', rating: 5, date: '18 June 2020, 9:36 PM', comment: 'Nice turf, well maintained' },
+            { name: 'Mitchell Admin', rating: 5, date: '18 June 2020, 9:36 PM', comment: 'Nice turf, well maintained' },
+            { name: 'Mitchell Admin', rating: 5, date: '18 June 2020, 9:36 PM', comment: 'Nice turf, well maintained' },
+            { name: 'Mitchell Admin', rating: 5, date: '18 June 2020, 9:36 PM', comment: 'Nice turf, well maintained' }
+        ];
+
+        let reviewsLoaded = 3;
+
+        function loadReviews() {
+            const container = document.getElementById('reviewsContainer');
+            
+            for (let i = 0; i < Math.min(reviewsLoaded, reviews.length); i++) {
+                const review = reviews[i];
+                const reviewElement = document.createElement('div');
+                reviewElement.className = 'review-item';
+                reviewElement.innerHTML = `
+                    <div class="review-header">
+                        <span class="reviewer-name">${review.name}</span>
+                        <span class="review-date">📅 ${review.date}</span>
+                    </div>
+                    <div class="rating">
+                        <span class="stars">${'⭐'.repeat(review.rating)}</span>
+                    </div>
+                    <div class="info-content" style="margin-top: 0.5rem;">${review.comment}</div>
+                `;
+                container.appendChild(reviewElement);
+            }
+        }
+
+        function loadMoreReviews() {
+            reviewsLoaded = Math.min(reviewsLoaded + 3, reviews.length);
+            document.getElementById('reviewsContainer').innerHTML = '';
+            loadReviews();
+            
+            if (reviewsLoaded >= reviews.length) {
+                document.querySelector('.load-more').style.display = 'none';
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadReviews();
+        });
+
+        // Smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

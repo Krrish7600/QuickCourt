@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickCourt Profile Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for colors and spacing */
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #3e8e41;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border-radius: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        .header-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4CAF50;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            background: #4CAF50;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto; /* Changed margin to 20px top/bottom and auto left/right */
+            overflow: hidden;
+            flex: 1;
+            gap: 20px; /* Added gap between sidebar and main content */
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: fit-content; /* Make sidebar only as tall as its content */
+        }
+
+        .profile-picture {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #eaeaea;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-details {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .user-details h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin: 0; /* Remove default paragraph margin */
+        }
+
+        .back-to-home-btn {
+            width: 100%; /* Make button full width of sidebar */
+            padding: 10px;
+            margin-top: 20px; /* Add margin to separate from user details */
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .back-to-home-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background: white;
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            margin-left: 0; /* Removed margin to fix spacing */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tab-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .tab-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: transparent;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .tab-buttons button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .tab-buttons button:hover {
+            background-color: #eaeaea;
+        }
+
+        .booking-card {
+            background: #f9f9f9;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .booking-card h3 {
+            margin-bottom: 5px;
+        }
+
+        .booking-card p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .booking-card .status {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .booking-card .actions {
+            margin-top: 10px;
+        }
+
+        .booking-card button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .booking-card .cancel-button {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .booking-card .cancel-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .booking-card .review-button {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .booking-card .review-button:hover {
+            background-color: #0056b3;
+        }
+
+        .edit-profile {
+            display: none;
+            flex-direction: column;
+        }
+
+        .edit-profile input {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        .edit-profile button {
+            margin-top: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: var(--border-radius);
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .edit-profile .save-button {
+            background-color: var(--primary);
+        }
+
+        .edit-profile .save-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .edit-profile .reset-button {
+            background-color: gray;
+        }
+
+        .edit-profile .reset-button:hover {
+            background-color: darkgray;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header style="background: white; padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;">
+    <a href="home.html" class="header-logo">QuickCourt</a>
+    <a href="profile.html" class="profile-btn">
+        <img src="https://example.com/profile-icon.svg" alt="Profile Icon" style="width: 20px; height: 20px;">
+        <span>Profile</span>
+    </a>
+</header>
+    <div class="container">
+        <div class="sidebar">
+            <div class="profile-picture">
+                <img src="https://via.placeholder.com/100" alt="Profile Picture">
+            </div>
+            <div class="user-details">
+                <h2 id="user-name">John Doe</h2>
+                <p id="user-phone">+1234567890</p>
+                <p id="user-email">user@example.com</p>
+            </div>
+             <a href="home.html" class="back-to-home-btn">🏠 Back to Home</a>
+        </div>
+        <div class="main-content">
+            <div class="tab-buttons">
+                <button id="all-bookings-tab" class="active" onclick="showAllBookings()">All Bookings</button>
+                <button id="cancelled-bookings-tab" onclick="showCancelledBookings()">Cancelled Bookings</button>
+                <button id="edit-profile-tab" onclick="showEditProfile()">Edit Profile</button>
+            </div>
+
+            <div id="all-bookings" class="all-bookings">
+                <div class="booking-card">
+                    <h3>Venue Name 1</h3>
+                    <p>Sport: Basketball</p>
+                    <p>Date: 2023-10-01</p>
+                    <p>Time: 10:00 AM</p>
+                    <p>Location: City Park</p>
+                    <p class="status">Status: <span style="color: green;">Confirmed</span></p>
+                    <div class="actions">
+                        <button class="cancel-button" onclick="cancelBooking(this)">Cancel Booking</button>
+                        <button class="review-button" onclick="writeReview()">Write Review</button>
+                    </div>
+                </div>
+                <div class="booking-card">
+                    <h3>Venue Name 2</h3>
+                    <p>Sport: Tennis</p>
+                    <p>Date: 2023-09-15</p>
+                    <p>Time: 2:00 PM</p>
+                    <p>Location: Sports Complex</p>
+                    <p class="status">Status: <span style="color: red;">Cancelled</span></p>
+                    <div class="actions">
+                        <button class="review-button" onclick="writeReview()">Write Review</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cancelled-bookings" class="cancelled-bookings" style="display: none;">
+                <div class="booking-card">
+                    <h3>Venue Name 3</h3>
+                    <p>Sport: Soccer</p>
+                    <p>Date: 2023-08-20</p>
+                    <p>Time: 5:00 PM</p>
+                    <p>Location: Community Field</p>
+                    <p class="status">Status: <span style="color: red;">Cancelled</span></p>
+                </div>
+            </div>
+
+            <div id="edit-profile" class="edit-profile">
+                <input type="text" id="full-name" placeholder="Full Name" value="John Doe">
+                <input type="email" id="email" placeholder="Email" value="user@example.com">
+                <input type="password" id="old-password" placeholder="Old Password">
+                <input type="password" id="new-password" placeholder="New Password">
+                <button class="save-button" onclick="saveProfile()">Save</button>
+                <button class="reset-button" onclick="resetProfile()">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to show the Edit Profile view
+        function showEditProfile() {
+            document.getElementById('all-bookings').style.display = 'none';
+            document.getElementById('cancelled-bookings').style.display = 'none';
+            document.getElementById('edit-profile').style.display = 'flex';
+            document.getElementById('edit-profile-tab').classList.add('active');
+            document.getElementById('all-bookings-tab').classList.remove('active');
+            document.getElementById('cancelled-bookings-tab').classList.remove('active');
+        }
+
+        // Function to show the All Bookings view
+        function showAllBookings() {
+            document.getElementById('all-bookings').style.display = 'block';
+            document.getElementById('cancelled-bookings').style.display = 'none';
+            document.getElementById('edit-profile').style.display = 'none';
+            document.getElementById('all-bookings-tab').classList.add('active');
+            document.getElementById('cancelled-bookings-tab').classList.remove('active');
+            document.getElementById('edit-profile-tab').classList.remove('active');
+        }
+
+        // Function to show the Cancelled Bookings view
+        function showCancelledBookings() {
+            document.getElementById('all-bookings').style.display = 'none';
+            document.getElementById('cancelled-bookings').style.display = 'block';
+            document.getElementById('edit-profile').style.display = 'none';
+            document.getElementById('cancelled-bookings-tab').classList.add('active');
+            document.getElementById('all-bookings-tab').classList.remove('active');
+            document.getElementById('edit-profile-tab').classList.remove('active');
+        }
+
+        // Function to cancel a booking
+        function cancelBooking(button) {
+            const card = button.closest('.booking-card');
+            const status = card.querySelector('.status span');
+            status.textContent = 'Cancelled';
+            status.style.color = 'red';
+            button.style.display = 'none'; // Hide the cancel button
+            alert('Booking cancelled successfully!');
+        }
+
+        // Function to write a review
+        function writeReview() {
+            alert('Redirecting to review page...');
+            // In a real application, you would redirect to the review page
+        }
+
+        // Function to save profile changes
+        function saveProfile() {
+            alert('Profile saved successfully!');
+            // In a real application, you would send the updated profile data to the server
+        }
+
+        // Function to reset profile fields
+        function resetProfile() {
+            document.getElementById('full-name').value = 'John Doe';
+            document.getElementById('email').value = 'user@example.com';
+            document.getElementById('old-password').value = '';
+            document.getElementById('new-password').value = '';
+            alert('Profile reset to original values.');
+        }
+
+        // Initialize the view
+        showAllBookings(); // Show All Bookings by default
+    </script>
+</body>
+</html>

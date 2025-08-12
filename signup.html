@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickCourt Sign-Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #3e8e41;
+            --accent: #FF9800;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --danger: #dc3545;
+            --border-radius: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-image {
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), 
+                        url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            color: white;
+            position: relative;
+        }
+
+        .hero-image h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .hero-image p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .logo {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .form-container {
+            padding: 50px;
+        }
+
+        .form-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-header h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 40px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: var(--primary);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Profile picture styling */
+        .profile-picture-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 15px;
+            border: 3px solid var(--primary);
+        }
+
+        .profile-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .profile-circle .default-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            color: var(--gray);
+        }
+
+        .upload-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .upload-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        #profile-pic {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-image {
+                display: none;
+            }
+            
+            .form-container {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero-image">
+            <div class="logo">QuickCourt</div>
+            <h2>Join Our Sports Community</h2>
+            <p>Find players, book courts, and organize matches effortlessly with QuickCourt</p>
+        </div>
+        
+        <div class="form-container">
+            <div class="form-header">
+                <h1>Create Account</h1>
+                <p>Join thousands of players and facility owners</p>
+            </div>
+            
+            <form id="signup-form">
+                <div class="profile-picture-container">
+                    <div class="profile-circle">
+                        <img id="profile-preview" src="" alt="Profile preview">
+                        <div class="default-icon"><i class="fas fa-user"></i></div>
+                    </div>
+                    <button type="button" class="upload-btn" onclick="document.getElementById('profile-pic').click()">
+                        Upload Photo
+                    </button>
+                    <input type="file" id="profile-pic" accept="image/*">
+                    <span id="file-error" class="error"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="role">I am a...</label>
+                    <select id="role" required>
+                        <option value="">Select role</option>
+                        <option value="player">Player</option>
+                        <option value="facility-owner">Facility Owner</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="full-name">Full Name</label>
+                    <input type="text" id="full-name" placeholder="Your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="example@email.com" required>
+                    <span id="email-error" class="error"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Create password" required>
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword('password')"></i>
+                    <span id="password-error" class="error"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" placeholder="Confirm password" required>
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword('confirm-password')"></i>
+                    <span id="confirm-password-error" class="error"></span>
+                </div>
+                
+                <button type="submit" class="btn">Sign Up</button>
+                
+                <div class="login-link">
+    Already have an account? <a href="login.html">Login</a>
+                    Already have an account? <a href="#">Log in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Toggle password visibility
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            const icon = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // Profile picture upload and preview
+        document.getElementById('profile-pic').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('profile-preview');
+            const error = document.getElementById('file-error');
+            const defaultIcon = document.querySelector('.profile-circle .default-icon');
+            
+            if (file) {
+                // Check file size (1MB max)
+                if (file.size > 1024 * 1024) {
+                    error.textContent = 'Image must be less than 1MB';
+                    preview.style.display = 'none';
+                    defaultIcon.style.display = 'block';
+                    return;
+                }
+                
+                error.textContent = '';
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    defaultIcon.style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form validation and submission
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+            
+            // Clear previous errors
+            document.querySelectorAll('.error').forEach(el => el.textContent = '');
+            
+            // Email validation
+            const email = document.getElementById('email').value;
+            const emailError = document.getElementById('email-error');
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                emailError.textContent = 'Please enter a valid email address';
+                isValid = false;
+            }
+            
+            // Password validation
+            const password = document.getElementById('password').value;
+            const passwordError = document.getElementById('password-error');
+            if (!/(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&*!])[A-Za-z\d@#$%^&*!]{8,20}$/.test(password)) {
+                passwordError.textContent = 'Password must be 8-20 chars with 1 uppercase, 1 number and 1 special symbol';
+                isValid = false;
+            }
+            
+            // Confirm password validation
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const confirmError = document.getElementById('confirm-password-error');
+            if (password !== confirmPassword) {
+                confirmError.textContent = 'Passwords do not match';
+                isValid = false;
+            }
+            
+            // Role selection validation
+            if (!document.getElementById('role').value) {
+                isValid = false;
+                // You might want to add error display for role selection
+            }
+            
+            // If all validations pass
+            if (isValid) {
+                alert('Account created successfully!');
+                // In a real app, you would send data to server here
+                // this.reset(); // Reset the form
+            }
+        });
+
+        // Live validation as user types
+        document.getElementById('email').addEventListener('input', function() {
+            const emailError = document.getElementById('email-error');
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.value)) {
+                emailError.textContent = 'Please enter a valid email address';
+            } else {
+                emailError.textContent = '';
+            }
+        });
+
+        document.getElementById('password').addEventListener('input', function() {
+            const passwordError = document.getElementById('password-error');
+            if (!/(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&*!])[A-Za-z\d@#$%^&*!]{8,20}$/.test(this.value)) {
+                passwordError.textContent = 'Password must be 8-20 chars with 1 uppercase, 1 number and 1 special symbol';
+            } else {
+                passwordError.textContent = '';
+                // Also check confirm password when password changes
+                const confirmPassword = document.getElementById('confirm-password').value;
+                const confirmError = document.getElementById('confirm-password-error');
+                if (confirmPassword && this.value !== confirmPassword) {
+                    confirmError.textContent = 'Passwords do not match';
+                } else {
+                    confirmError.textContent = '';
+                }
+            }
+        });
+
+        document.getElementById('confirm-password').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmError = document.getElementById('confirm-password-error');
+            if (this.value !== password) {
+                confirmError.textContent = 'Passwords do not match';
+            } else {
+                confirmError.textContent = '';
+            }
+        });
+    </script>
+</body>
+</html>
